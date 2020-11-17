@@ -1,0 +1,28 @@
+#[std]
+#[import("board.ok")]
+#[import("stone.ok")]
+
+fn discard(b: bool) {}
+
+fn get_remaining_mem() -> num {
+    let mem = alloc(1) as &char;
+    let n = mem as num;
+    free mem: 1;
+    return n + 1;
+}
+
+fn main() {
+    putnumln(get_remaining_mem());
+    let b = Board::new(9);
+    b.print();
+
+    let s = Stone::black(2, 2);
+    putstrln(
+        b.add_stone(s)?
+            "Successful move!" : "Unsuccessful move."
+    );
+
+    b.print();
+
+    putnumln(get_remaining_mem());
+}

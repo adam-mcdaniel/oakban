@@ -1,0 +1,41 @@
+#[header("This file implements the Stone structure")]
+
+#[doc("The boolean value representing the color White")]
+const WHITE = true;
+#[doc("The boolean value representing the color Black")]
+const BLACK = false;
+
+
+#[doc("A stone placed on a Goban")]
+struct Stone {
+    let x: num,
+        y: num,
+        is_empty: bool,
+        color: bool;
+
+    #[doc("Construct a black stone")]
+    fn black(x: num, y: num) -> Stone {
+        return [x, y, false, BLACK]
+    }
+    
+    #[doc("Construct a white stone")]
+    fn white(x: num, y: num) -> Stone {
+        return [x, y, false, WHITE]
+    }
+    
+    #[doc("Construct an empty stone, or a pass move")]
+    fn empty(x: num, y: num) -> Stone {
+        return [x, y, true, BLACK]
+    }
+
+    #[doc("Print this stone to the terminal")]
+    fn print(self: &Stone) {
+        if self->is_empty {
+            putchar('.');
+        } else if self->color {
+            putchar('o');
+        } else {
+            putchar('*');
+        }
+    }
+}
