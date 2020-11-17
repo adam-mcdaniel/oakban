@@ -1,0 +1,93 @@
+#[import("stone.ok")]
+
+struct Board {
+    let size: num,
+        stones: &Stone,
+        turn: bool;
+
+    fn new(size: num) -> Board {
+        let mem: &Stone = alloc((size * size) * sizeof(Stone));
+        for (let y=0; y<size; y+=1) {
+            for (let x=0; x<size; x+=1) {
+                mem[(y * size) + x] = Stone::empty(x, y);
+            }
+        }
+
+        return [
+            size,
+            mem,
+            BLACK
+        ]
+    }
+    
+    fn at(self: &Board, x: num, y: num) -> &Stone {
+        return &(self->stones)[x + (y * (self->size))];
+    }
+
+    fn add_stone(self: &Board, stone: Stone) -> bool {
+        if self.is_legal(stone) {
+            *(self.at(stone->x, stone->y)) = stone;
+            self->turn = !(self->turn);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    fn is_legal(self: &Board, stone: Stone) -> bool {
+        if stone->is_empty() {
+            return true;
+        } else if (stone->color) != (self->turn) {
+            return false
+        } else if (self->at(stone->x, stone->y))->is_empty {
+            return true;
+        } else {
+            return false
+        }
+    }
+
+    fn print(self: &Board) {
+        for y in 0..self->size {
+            if y==0 {
+                putchar('+');
+                for x in 0..self->size {
+                    putchar('-');
+                }
+                putcharln('+');
+            }
+            putchar('|');
+
+            for x in 0..self->size {
+                (self->at(x, y)).print();
+            }
+            putcharln('|');
+
+            if y==((self->size)-1) {
+                putchar('+');
+                for x in 0..self->size {
+                    putchar('-');
+                }
+                putcharln('+');
+            }
+        }
+
+        putstrln(self->turn? "White's turn." : "Black's turn.");
+    }
+
+    // Memory management
+    fn copy(self: &Board) -> Board {
+        let new: &Stone = alloc(((self->size) * (self->size)) * sizeof(Stone));
+        for i in 0..(self->size) * (self->size) {
+            new[i] = (self->stones)[i];
+        }
+        return [
+            self->size,
+            new,
+            self->turn
+        ]
+    }
+
+    fn drop(self: &Board) {
+        free self->stones: (self->size) * (self->size);
+    }
+}
